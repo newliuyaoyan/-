@@ -1,0 +1,20 @@
+1.主人   author   -- bootstarp  
+2.简介   intor
+3.列表   title
+4.内容   content
+5.评论   comment
+6.id     id
+7.日期   date
+
+评论如何关联文章
+id   id
+fromId     
+content 
+author
+date
+
+实现功能
+1.首页访问
+2.文章页面访问
+3.评论加载
+4.发表评论

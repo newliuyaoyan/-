@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./js/jq.js"></script>
+    <script src="./boot/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="./boot/css/bootstrap.css">
+    <style>
+        .wrap {
+            width: 100%;
+            min-height: 600px;
+            position: absolute;
+            display: none;
+        }
+
+        .wrap-box {
+            position: relative;
+        }
+
+        .active {
+            display: block;
+        }
+        .right{
+            
+            font-size: 18px;
+            margin-top:20px;
+           
+        }
+        .right a{
+            color: grey;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>个人空间 <small></small></h1>
+        </div>
+        <div class="col-lg-2">
+            <ul class="nav nav-pills nav-stacked">
+                <li role="presentation" class="list" data-value="home"><a href="#">首页</a></li>
+                <li role="presentation" class="active list" data-value="send"><a href="#">发表文章</a></li>
+                <li role="presentation" class="list" data-value="check" id="shenhe"><a href="#">审核评论</a></li>
+            </ul>
+        </div>
+        <div class="col-lg-6 wrap-box">
+            <div class="wrap" id="home">
+                <div class="right"><a href="/">返回首页</a></div>
+            </div>
+            <div class="wrap active" id="send">
+                <form class="form-horizontal" method="POST" action="/admin/submit">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">题目</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputEmail3" placeholder="题目" name="title">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">简介</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword3" placeholder="简介" name="intor">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">作者</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputEmail3" placeholder="作者" name="author">
+                        </div>
+                    </div>
+                    <textarea class="form-control" rows="3" name="content" placeholder="内容"></textarea>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">发表文章</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="wrap " id="check">
+                <ul class="list-group">
+                   
+
+                </ul>
+            </div>
+        </div>
+        <script>
+            var list = $('.list')
+            var divs = $('.wrap');
+            list.on('click', function () {
+                var value = $(this).attr('data-value');
+                var div = $('#' + value);
+                list.removeClass('active')
+                divs.removeClass('active');
+                div.addClass('active')
+            })
+            //ajax实现局部渲染
+            var render=function(data){
+                var html = '';
+                data.forEach(element => {
+                    html += `  <li class="list-group-item">${element.content}
+                        <span class="badge">${element.title}</span><br/><br/>
+                        <div class="btn-group" role="group" aria-label="...">
+  <button type="submit" class="btn btn-default btn-success btn-pass" data-id='${element._id}'>通过</button>
+  <button type="submit" class="btn btn-default btn-danger btn-nopass"  data-id='${element._id}'>拒绝</button>
+
+</div>
+                    </li>`
+                });
+                $('.list-group').html(html)
+                addlistener();
+            }
+
+            var getcomment = function () {
+            
+                $.ajax({
+                    type: 'get',
+                    url: '/admin/getComment',
+                    data: {},
+                    success: function (e) {
+                        render(e);
+                    }
+                })
+            }
+         
+            var pass=function(id){
+                $.ajax({
+                    type:'get',
+                    url:'/admin/passComment',
+                    data:{
+                        id:id,
+                    }
+                })
+            }
+            var nopass=function(id){
+                $.ajax({
+                    type:'get',
+                    url:'/admin/nopassComment',
+                    data:{
+                        id:id,
+                    }
+                })
+            }
+            var addlistener=function(){
+                $('.btn-pass').on('click',function(){
+                    pass($(this).attr('data-id'))
+                    getcomment();
+                })
+                $('.btn-nopass').on('click',function(){
+                    nopass($(this).attr('data-id'))
+                    getcomment();
+                })
+            }
+            $('#shenhe').on('click', function () {
+               getcomment();
+            })
+        </script>
+    </div>
+</body>
+
+</html>

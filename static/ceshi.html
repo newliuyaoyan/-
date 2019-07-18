@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn">点赞</button>
+        <script>
+                var btn= document.getElementById('btn')
+                var state={
+                    like:false
+                }
+                var setstate=function(news){
+                    state=news;
+                    render();
+                }
+                var render=function(){
+                    if(state.like){
+                        btn.innerHTML='已赞'
+                    }
+                    else{
+                        btn.innerHTML='点赞'
+                    }
+                }
+                btn.addEventListener('click',function(){
+                    setstate({
+                        like: !state.like
+                    })
+                })
+                </script>
+
+
+
+
+
+
+
+
+
+
+<script>
+        var btn= document.getElementById('<%=e._id%>')
+        
+        var state={
+            like:false
+        }
+        var setstate=function(news){
+            state=news;
+            render();
+        }
+        var render=function(){
+            if(state.like){
+                btn.innerHTML='已赞'
+            }
+            else{
+                btn.innerHTML='点赞'
+            }
+        }
+        $('#<%=e._id%>').on('click',function(){
+            console.log(btn)
+            setstate({
+                like: !state.like
+            })
+        })
+        </script> 
+</body>
+</html>

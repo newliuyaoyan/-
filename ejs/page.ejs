@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./js/jq.js"></script>
+    <script src="./boot/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="./boot/css/bootstrap.css">
+    <style>
+        .here {
+            word-wrap: break-word;
+        }
+
+        .right {
+            float: right;
+        }
+        .right1{
+            float: right;
+            font-size: 18px;
+            margin-top:20px;
+           
+        }
+        .right1 a{
+            color: grey;
+            text-decoration: none;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1><%= data.title %><div class="right1"><a href="/">返回首页</a></div></h1>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <%= data.date %>
+            </div>
+            <div class="panel-body here">
+                <%= data.content %>
+            </div>
+        </div>
+        <hr>
+        <h4>评论</h4>
+        <ul class="list-group">
+            <%comment.forEach((e)=>{%>
+            <li class="list-group-item">
+                <button class="btn btn-primary" type="button">
+                    <%=e.date%>
+                </button>
+                <%=e.content%>
+                <button class="btn btn-primary right" id="<%=e._id%>" type="button">
+                    
+                </button>
+                <script>
+                     var state = {
+                        like: true
+                    }
+                    var key = "<%=e.key%>";
+                    var setstate = function (news) {
+                        state = news;
+                    }
+                    if (key == "1") {
+                        $('#<%=e._id%>').html('已赞')
+                        setstate({
+                            like: !state.like
+                        })
+                    }
+                    else{
+                        $('#<%=e._id%>').html('点赞')
+                    }
+                   
+                 
+                    $('#<%=e._id%>').on('click', function () {
+                 
+                        if (state.like) {
+                            $('#<%=e._id%>').html('已赞')
+                            $.ajax({
+                                type: 'get',
+                                url: '/admin/zan',
+                                data: {
+                                    id: '<%=e._id%>'
+                                }
+                            })
+
+                        }
+                        else {
+                            $('#<%=e._id%>').html('点赞')
+                            $.ajax({
+                                type: 'get',
+                                url: '/admin/nozan',
+                                data: {
+                                    id: '<%=e._id%>'
+                                }
+                            })
+                        }
+                        setstate({
+                            like: !state.like
+                        })
+                    })
+
+
+                </script>
+
+            </li>
+            <%})%>
+        </ul>
+        <hr>
+        <h4>发表评论</h4>
+        <form action="/commendSubmit?id=<%= data._id %>&title=<%= data.title %>" method="POST">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="content">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">提交评论</button>
+                        </span>
+                    </div><!-- /input-group -->
+                </div><!-- /.col-lg-6 -->
+            </div>
+        </form>
+
+    </div>
+
+</body>
+
+</html>
